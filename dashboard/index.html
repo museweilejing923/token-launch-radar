@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Token Radar: pre-token protocols ranked by implied value</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <div class="logo" aria-hidden="true">◉</div>
+    <div>
+      <h1>Token Radar</h1>
+      <p class="tag">Every protocol that records no token yet, ranked by what its token would be worth.</p>
+    </div>
+  </div>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section class="kpis" id="kpis" aria-label="Board summary"></section>
+
+<nav class="tabs" aria-label="Views">
+  <button class="tab active" data-tab="board" type="button">Pre-token board</button>
+  <button class="tab" data-tab="live" type="button">Live tokens</button>
+  <button class="tab" data-tab="model" type="button">How the model works</button>
+</nav>
+
+<section id="view-board" class="view">
+  <div class="controls">
+    <label class="search">Search
+      <input id="q" type="search" placeholder="Protocol, category or chain…" autocomplete="off">
+    </label>
+    <label>Category
+      <select id="f-cat"></select>
+    </label>
+    <label>Chain
+      <select id="f-chain"></select>
+    </label>
+    <label>Min TVL
+      <select id="f-tvl">
+        <option value="0">Any</option>
+        <option value="50000000">$50M+</option>
+        <option value="100000000">$100M+</option>
+        <option value="500000000">$500M+</option>
+        <option value="1000000000">$1B+</option>
+      </select>
+    </label>
+    <label class="check"><input id="f-watch" type="checkbox"> Watchlist only</label>
+    <label>Sort by
+      <select id="f-sort">
+        <option value="implied">Implied value</option>
+        <option value="tvl">TVL</option>
+        <option value="growth">7-day growth</option>
+        <option value="age">Age</option>
+        <option value="multiple">Value per TVL</option>
+      </select>
+    </label>
+  </div>
+  <p class="count" id="count"></p>
+  <div class="table-wrap">
+    <table id="board">
+      <thead>
+        <tr>
+          <th>#</th><th>Protocol</th><th>Category</th><th>Chains</th>
+          <th class="num">TVL</th><th class="num">7d</th><th class="num">Age</th>
+          <th class="num">Implied value</th><th class="num">× TVL</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+  <p class="note">Implied values are this radar's own estimates from the snapshot's figures. They are not predictions that a token will launch, or when.</p>
+</section>
+
+<section id="view-live" class="view" hidden>
+  <p class="lede">These protocols already have a token that trades, so the board shows the market's own value for them — never mixed into the pre-token ranking. They are also the comparables the model prices pre-token protocols against.</p>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Protocol</th><th>Category</th><th>Chains</th><th class="num">TVL</th><th class="num">Market cap</th><th class="num">Mcap / TVL</th><th class="num">7d</th></tr>
+      </thead>
+      <tbody id="live-rows"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="view-model" class="view" hidden>
+  <div class="model-grid">
+    <div class="card">
+      <h2>The formula</h2>
+      <p class="formula">implied value = TVL × category multiple × growth × maturity × breadth</p>
+      <p>Every number comes from the sealed snapshot. No protocol name is ever special-cased: the same function scores every row.</p>
+      <dl id="constants"></dl>
+    </div>
+    <div class="card">
+      <h2>Category multiples</h2>
+      <p>The winsorised median mcap / TVL of the live-token protocols in each category (at least 3 peers). Categories without enough live peers use the global median.</p>
+      <table class="mini">
+        <thead><tr><th>Category</th><th class="num">Live peers</th><th class="num">Multiple</th></tr></thead>
+        <tbody id="multiples"></tbody>
+      </table>
+    </div>
+    <div class="card wide">
+      <h2>What “pre-token” means here</h2>
+      <p>A protocol is pre-token when its DefiLlama record carries no market cap, no CoinGecko id and no symbol. That is what the snapshot records — it cannot prove the protocol has no token, and this board never claims it does. Wrapped, staked and bridged products of tokens that already trade are left out of the ranking, as are exchanges and versioned pools.</p>
+      <p>The watchlist is the floor, never the ceiling: the 40 protocols at or above $50M TVL that meet the house rule are all on the board, and the board goes on to rank every other rankable pre-token protocol below the floor — the early ones this radar exists to find.</p>
+    </div>
+  </div>
+</section>
+
+<aside id="drawer" class="drawer" hidden aria-label="Protocol detail"></aside>
+
+<footer class="foot" id="foot"></footer>
+
+<script src="../data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
